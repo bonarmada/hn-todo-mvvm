@@ -1,8 +1,6 @@
 package com.bonarmada.hn_todo_mvvm.di.module
 
-import android.content.Context
 import com.bonarmada.hn_todo_mvvm.di.scope.AppScope
-import com.bumptech.glide.Glide
 import com.google.gson.FieldNamingPolicy
 import com.google.gson.Gson
 import com.google.gson.GsonBuilder
@@ -17,7 +15,7 @@ import retrofit2.converter.gson.GsonConverterFactory
 import timber.log.Timber
 
 
-@Module(includes = [ContextModule::class])
+@Module(includes = [AppModule::class])
 class NetworkModule(private val baseUrl: String) {
 
     @AppScope
