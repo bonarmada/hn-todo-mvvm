@@ -33,7 +33,6 @@ class NetworkModule(private val baseUrl: String) {
                         //TODO: Fetch token from sharedprefs/somewhere
                         .addHeader("Content-Type", "application/json")
                         .addHeader("Accept", "application/json")
-                        .addHeader("Authorization", "Bearer MzM4NEAyY2M3NWIzN2I2OGE4ODYyMWZiMmExNTc1ZDEyNjRkNDMwNGNlNjZkMTE2NDMwODBjNmIxYTM3NWViNGY3YThi")
                         .build())
             }
 
@@ -41,7 +40,6 @@ class NetworkModule(private val baseUrl: String) {
     @Provides
     internal fun provideHttpClient(requestInterceptor: Interceptor, loggingInterceptor: HttpLoggingInterceptor): OkHttpClient =
             OkHttpClient.Builder()
-                    .addInterceptor(requestInterceptor)
                     .addInterceptor(loggingInterceptor)
                     .build()
 
