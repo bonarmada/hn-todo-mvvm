@@ -1,5 +1,6 @@
 package com.bonarmada.hn_todo_mvvm.ui.main
 
+import android.arch.core.util.Function
 import android.arch.lifecycle.LiveData
 import android.arch.lifecycle.MutableLiveData
 import android.arch.lifecycle.Transformations
@@ -8,11 +9,13 @@ import android.arch.paging.LivePagedListBuilder
 import android.arch.paging.PagedList
 import com.bonarmada.hn_todo_mvvm.data.model.Story
 import com.bonarmada.hn_todo_mvvm.data.repo.StoryRepository
+import com.bonarmada.hn_todo_mvvm.data.vo.StoryItem
 import javax.inject.Inject
 
 class MainViewModel @Inject constructor(private val repository: StoryRepository) : ViewModel() {
-    lateinit var liveStories: LiveData<List<Story>>
+    lateinit var liveStories: LiveData<List<StoryItem>>
     lateinit var pagedStories: LiveData<PagedList<Story>>
+    lateinit var pagedStoryItem: LiveData<PagedList<StoryItem>>
 
     private val config = PagedList.Config.Builder()
             .setPageSize(10)
@@ -26,9 +29,17 @@ class MainViewModel @Inject constructor(private val repository: StoryRepository)
     }
 
     private fun subscribe() {
-//        this.liveStories = this.repository.dao.getAllStories()
         this.pagedStories = LivePagedListBuilder(this.repository.dao.storiesByPage(), config).build()
+
+        this.liveStories = Transformations.map(this.repository.dao.getAllStories(), Function {
+            ArrayList<StoryItem>().apply {
+                it.forEach {
+                    this.add(StoryItem(it))
+                }
+            }
+        })
     }
 
-    internal fun remoteCall() = repository.getNewStories()
+    internal fun refreshNewStories() = repository.fetchNewFromRemote()
+    internal fun refreshStory(itemId: Int) = repository.fetchStoryFromRemote(itemId)
 }

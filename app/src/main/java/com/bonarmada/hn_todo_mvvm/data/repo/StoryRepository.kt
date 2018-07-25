@@ -12,7 +12,7 @@ import javax.inject.Inject
 class StoryRepository @Inject internal constructor(private val remote: StoryRemote, internal val dao: StoryDao) {
     private val tag = this::class.java.simpleName
 
-    fun getNewStories(){
+    fun fetchNewFromRemote(){
         remote.getNew()
                 .subscribeOn(Schedulers.io())
                 .subscribe { res, ex ->
@@ -20,6 +20,18 @@ class StoryRepository @Inject internal constructor(private val remote: StoryRemo
                     if (res.code() == 200){
                         res.body()?.forEach {
                             dao.insert(Story(it, "test data"))
+                        }
+                    }
+                }
+    }
+
+    fun fetchStoryFromRemote(itemId: Int){
+        remote.getStory(itemId)
+                .subscribeOn(Schedulers.io())
+                .subscribe{ res, ex ->
+                    if (res.code() == 200){
+                        res.body()?.let {
+                            dao.insert(it)
                         }
                     }
                 }
